@@ -53,6 +53,7 @@ def adicionarEstoque(att):
             cursor.execute(query, (att['descricao'], att['saldo'], att['unidade'], att['dataMov'],
                                    att['tipoMov'], att['solicitante'], att['motivo']))
             conn.commit()
+            print("Acerto adicionado com sucesso.")
     except sqlite3.Error as e:
         print(e)
 
@@ -168,3 +169,5 @@ def excluirTabela(nome_tabela):
         print(e)
 
 # if __name__ == '__main__':
+
+getEstoqueCompleto()
