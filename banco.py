@@ -41,6 +41,7 @@ def criar_tabela():
     except sqlite3.Error as e:
         print(e)
 
+
 def adicionarEstoque(att):
     query = '''
         INSERT INTO ctrl_estoque (descricao, saldo, unidade, dataMov, tipoMov,solicitante, motivo) 
@@ -76,7 +77,7 @@ def add_produto():
                 conn.commit()
         print('Produto criado')
     except sqlite3.Error as e:
-        print(e)
+        print(e)  
 
 
 def getEstoqueCompleto():
@@ -156,6 +157,7 @@ def excluirLinha(id_linha):
     except sqlite3.Error as e:
         print(e)
 
+
 def excluirTabela(nome_tabela):
     try:
         with sqlite3.connect(caminho_bd) as conn:
@@ -168,6 +170,99 @@ def excluirTabela(nome_tabela):
     except sqlite3.Error as e:
         print(e)
 
-# if __name__ == '__main__':
 
-getEstoqueCompleto()
+def criarTabelaProdutos():
+    query = [
+        """
+            CREATE TABLE IF NOT EXISTS produtos (
+                id INTEGER PRIMARY KEY,
+                nomeProduto text NOT NULL,
+                saldoTotal int NOT NULL,
+                unidade text NOT NULL
+            );
+        """
+    ]
+    
+    try:
+        with sqlite3.connect(caminho_bd) as conn:
+            cursor = conn.cursor()
+            for statement in query:
+                cursor.execute(statement)
+            conn.commit()
+        print("Tabela 'produtos' criada.")
+    except sqlite3.Error as e:
+        print(e)
+
+
+def cadastrarProduto():
+    sql = '''INSERT INTO produtos (nomeProduto, saldoTotal, unidade) 
+        VALUES (?, ?, ?)'''
+    
+    try:
+        with sqlite3.connect(caminho_bd) as conn:
+            #produto = ('Coxinha de Frango com Catupiry', 3500, '2024-06-10')
+            lst_produtos = [
+                ('Coxinha de Frango com Catupiry', 3000, 'UN'),
+                ('Empada de Frango', 3000, 'UN'),
+                ('Brigadeiro', 3000, 'UN')
+            ]
+            cursor = conn.cursor()
+            for p in lst_produtos:
+                cursor.execute(sql, p)
+                conn.commit()
+        print('Produtos criados')
+    except sqlite3.Error as e:
+        print(e)
+
+
+def verEstoque():
+    query = """SELECT * FROM produtos"""
+
+    try:
+        with sqlite3.connect(caminho_bd) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            rows = cursor.execute(query)
+            produtos = [dict(row) for row in rows]
+            return produtos
+    except sqlite3.Error as e:
+        print(e)
+
+
+
+def getProdutoUnico(id_produto):
+    query = f"""
+        SELECT * FROM produtos WHERE id = {id_produto}
+    """
+
+    try:
+        with sqlite3.connect(caminho_bd) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            produto = cursor.fetchone()
+            return produto
+    except sqlite3.Error as e:
+        print(e)
+
+
+def atualizarSaldo(req):
+    print(req)
+    produto = getProdutoUnico(req['id'])
+    valor_atualizado = produto[2] + req['movimentacao']
+
+    query = f"""
+        UPDATE produtos SET saldoTotal = {valor_atualizado} WHERE id = {req['id']}
+    """
+    try:
+        with sqlite3.connect(caminho_bd) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            conn.commit()
+    except sqlite3.Error as e:
+        print(e)
+    
+    teste = getProdutoUnico(req['id'])
+    print(f"=D  {teste}")
+
+
+

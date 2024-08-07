@@ -8,7 +8,9 @@ CORS(app)
 
 @app.route("/get-produtos", methods=['GET'])
 def ver_estoque():
-    produtos = banco.getEstoqueCompleto()
+    produtos = banco.verEstoque()
+    for x in produtos:
+        print(x)
     return produtos
 
 @app.route("/alterar-estoque",  methods=['POST'])
@@ -19,3 +21,10 @@ def alterar_estoque():
         banco.adicionarEstoque(data)
         return data
     #banco.adicionarEstoque()
+
+@app.route("/atualizar-saldo", methods=['PATCH'])
+def atualizar_saldo():
+    if request.method == 'PATCH':
+        data = request.json
+        banco.atualizarSaldo(data)
+        return data
