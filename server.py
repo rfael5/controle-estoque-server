@@ -28,3 +28,19 @@ def atualizar_saldo():
         data = request.json
         banco.atualizarSaldo(data)
         return data
+
+
+@app.route("/historico", methods=["GET"])
+def get_historico():
+    historico = banco.getEstoqueCompleto()
+    return historico
+
+@app.route("/historico-periodo", methods=["GET"])
+def get_historico_periodo():
+    args = request.args
+    data_inicio = args.get('data_inicio')
+    data_fim = args.get('data_fim')
+    print(f"{data_inicio} _______ {data_fim}")
+    historico = banco.buscarHistoricoPeriodo(data_inicio, data_fim)
+    print(historico)
+    return historico

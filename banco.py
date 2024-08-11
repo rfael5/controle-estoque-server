@@ -20,6 +20,7 @@ def criar_tabela():
         """
             CREATE TABLE IF NOT EXISTS ctrl_estoque (
                 id INTEGER PRIMARY KEY,
+                idProduto INTEGER NOT NULL,
                 descricao text NOT NULL,
                 saldo int NOT NULL,
                 unidade text NOT NULL,
@@ -44,15 +45,15 @@ def criar_tabela():
 
 def adicionarEstoque(att):
     query = '''
-        INSERT INTO ctrl_estoque (descricao, saldo, unidade, dataMov, tipoMov,solicitante, motivo) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO ctrl_estoque (idProduto, descricao, saldo, unidade, dataMov, tipoMov,solicitante, motivo) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     '''
     
     try:
         with sqlite3.connect(caminho_bd) as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (att['descricao'], att['saldo'], att['unidade'], att['dataMov'],
-                                   att['tipoMov'], att['solicitante'], att['motivo']))
+            cursor.execute(query, (att['idProduto'], att['descricao'], att['saldo'], att['unidade'], 
+                                   att['dataMov'], att['tipoMov'], att['solicitante'], att['motivo']))
             conn.commit()
             print("Acerto adicionado com sucesso.")
     except sqlite3.Error as e:
@@ -60,17 +61,30 @@ def adicionarEstoque(att):
 
 
 def add_produto():
-    sql = '''INSERT INTO ctrl_estoque (descricao, saldo, unidade, dataMov, tipoMov,solicitante, motivo) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    sql = """INSERT INTO ctrl_estoque (idProduto, descricao, saldo, unidade, dataMov, tipoMov,solicitante, motivo) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
     
     try:
         with sqlite3.connect(caminho_bd) as conn:
             #produto = ('Coxinha de Frango com Catupiry', 3500, '2024-06-10')
             lst_produtos = [
-                ('Coxinha de Frango com Catupiry', 3000, 'UN', '25/06/2024', 'soma', '', ''),
-                ('Empada de Frango', 3000, 'UN', '25/06/2024', 'soma', '', ''),
-                ('Brigadeiro', 3000, 'UN', '25/06/2024', 'soma', '', '')
-            ]
+                (1, "Coxinha de Frango com Catupiry", 500, "UN", "1722525660000", "adicao", "Solicitante 1", "Motivo exemplo"),
+                (3, "Brigadeiro", 600, "UN", "1722525660000", "remocao", "Solicitante 2", "Motivo exemplo"),
+                (2, "Empada de Frango", 700, "UN", "1722525660000", "adicao", "Solicitante 3", "Motivo exemplo"),
+                (1, "Coxinha de Frango com Catupiry", 800, "UN", "1722612060000", "remocao", "Solicitante 4", "Motivo exemplo"),
+                (3, "Brigadeiro", 900, "UN", "1722612060000", "adicao", "Solicitante 5", "Motivo exemplo"),
+                (2, "Empada de Frango", 1000, "UN", "1722871260000", "remocao", "Solicitante 6", "Motivo exemplo"),
+                (1, "Coxinha de Frango com Catupiry", 1100, "UN", "1722871260000", "adicao", "Solicitante 7", "Motivo exemplo"),
+                (3, "Brigadeiro", 1200, "UN", "1722871260000", "remocao", "Solicitante 8", "Motivo exemplo"),
+                (2, "Empada de Frango", 1300, "UN", "1722871260000", "adicao", "Solicitante 9", "Motivo exemplo"),
+                (1, "Coxinha de Frango com Catupiry", 1400, "UN", "1722957660000", "remocao", "Solicitante 10", "Motivo exemplo"),
+                (3, "Brigadeiro", 1500, "UN", "1722957660000", "adicao", "Solicitante 11", "Motivo exemplo"),
+                (2, "Empada de Frango", 1600, "UN", "1722957660000", "remocao", "Solicitante 12", "Motivo exemplo"),
+                (1, "Coxinha de Frango com Catupiry", 1700, "UN", "1722957660000", "adicao", "Solicitante 13", "Motivo exemplo"),
+                (3, "Brigadeiro", 1800, "UN", "1723044060000", "remocao", "Solicitante 14", "Motivo exemplo"),
+                (2, "Empada de Frango", 1900, "UN", "1723044060000", "adicao", "Solicitante 15", "Motivo exemplo")
+            ]  
+            
             cursor = conn.cursor()
             for p in lst_produtos:
                 cursor.execute(sql, p)
@@ -99,9 +113,10 @@ def buscarProdutoId(produto_id):
         with sqlite3.connect(caminho_bd) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            cursor.execute(f'SELECT * FROM ctrl_estoque WHERE pkProduto = {produto_id}')
+            cursor.execute(f'SELECT * FROM ctrl_estoque WHERE id = {produto_id}')
             row = cursor.fetchone()
             produto = dict(row)
+            print(produto)
             return produto
     except sqlite3.Error as e:
         print(e)
@@ -265,4 +280,40 @@ def atualizarSaldo(req):
     print(f"=D  {teste}")
 
 
+def buscarHistoricoPeriodo(data_inicio, data_fim):
+    query = f"""
+        SELECT * FROM ctrl_estoque WHERE dataMov BETWEEN {data_inicio} AND {data_fim}
+    """
+    try:
+        with sqlite3.connect(caminho_bd) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            rows = cursor.execute(query)
+            historico = [dict(row) for row in rows]
+            return historico
+    except sqlite3.Error as e:
+        print(e)
+        return e
+
+def apagarControleEstoque():
+    query = """DELETE FROM ctrl_estoque"""
+    try:
+        with sqlite3.connect(caminho_bd) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            conn.commit()
+            print("Tabela esvaziada.")
+    except sqlite3.Error as e:
+        print(e)
+        return e
+
+#def getSaldoTotal()
+
+#criar_tabela()
+#excluirTabela("ctrl_estoque")
+#apagarControleEstoque()
+#getEstoqueCompleto()
+#add_produto()
+#buscarProdutoId(19)
+#buscarProdutoId(2)
 
