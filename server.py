@@ -44,3 +44,5 @@ def get_historico_periodo():
     historico = banco.buscarHistoricoPeriodo(data_inicio, data_fim)
     print(historico)
     return historico
+
+get_historico()

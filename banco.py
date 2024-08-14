@@ -312,7 +312,7 @@ def apagarControleEstoque():
 #criar_tabela()
 #excluirTabela("ctrl_estoque")
 #apagarControleEstoque()
-#getEstoqueCompleto()
+getEstoqueCompleto()
 #add_produto()
 #buscarProdutoId(19)
 #buscarProdutoId(2)
