@@ -120,32 +120,6 @@ def buscarProdutoId(produto_id):
         print(e)
 
 
-def buscarProdutosPorData(dt_inicio, dt_fim):
-    try:
-        with sqlite3.connect(caminho_bd) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute(f'SELECT * FROM ctrl_estoque WHERE tipoMov="subtracao" AND dataMov BETWEEN {dt_inicio} AND {dt_fim}')
-            rows = cursor.fetchall()
-            produtos = [dict(row) for row in rows]
-            return produtos
-    except sqlite3.Error as e:
-        print(e)
-
-
-def buscarSAPorData(dt_inicio, dt_fim):
-    try:
-        with sqlite3.connect(caminho_bd) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute(f'SELECT * FROM ctrl_semi_acabados WHERE tipoMov="subtracao" AND dataMov BETWEEN {dt_inicio} AND {dt_fim}')
-            rows = cursor.fetchall()
-            produtos = [dict(row) for row in rows]
-            return produtos
-    except sqlite3.Error as e:
-        print(e)
-
-
 def atualizarSaldoEstoque(produto_id, qtd):
     try:
         with sqlite3.connect(caminho_bd) as conn:
@@ -302,13 +276,4 @@ def apagarControleEstoque():
         print(e)
         return e
 
-#def getSaldoTotal()
-
-#criar_tabela()
-#excluirTabela("ctrl_estoque")
-#apagarControleEstoque()
-#getEstoqueCompleto()
-#add_produto()
-#buscarProdutoId(19)
-#buscarProdutoId(2)
 

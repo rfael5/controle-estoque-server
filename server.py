@@ -42,10 +42,3 @@ def get_historico_periodo():
     historico = banco.buscarHistoricoPeriodo(data_inicio, data_fim)
     return historico
 
-
-def isNullOrEmpty(value):
-    if value == "" or value == None:
-        return True
-    else:
-        return False
-
