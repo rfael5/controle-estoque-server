@@ -102,7 +102,6 @@ def getEstoqueCompleto():
             cursor.execute('SELECT * FROM ctrl_estoque')
             rows = cursor.fetchall()
             produtos = [dict(row) for row in rows]
-            print(produtos)
             return produtos
     except sqlite3.Error as e:
         print(e)
@@ -116,7 +115,6 @@ def buscarProdutoId(produto_id):
             cursor.execute(f'SELECT * FROM ctrl_estoque WHERE id = {produto_id}')
             row = cursor.fetchone()
             produto = dict(row)
-            print(produto)
             return produto
     except sqlite3.Error as e:
         print(e)
@@ -261,7 +259,6 @@ def getProdutoUnico(id_produto):
 
 
 def atualizarSaldo(req):
-    print(req)
     produto = getProdutoUnico(req['id'])
     valor_atualizado = produto[2] + req['movimentacao']
 
@@ -276,8 +273,6 @@ def atualizarSaldo(req):
     except sqlite3.Error as e:
         print(e)
     
-    teste = getProdutoUnico(req['id'])
-    print(f"=D  {teste}")
 
 
 def buscarHistoricoPeriodo(data_inicio, data_fim):
@@ -312,7 +307,7 @@ def apagarControleEstoque():
 #criar_tabela()
 #excluirTabela("ctrl_estoque")
 #apagarControleEstoque()
-getEstoqueCompleto()
+#getEstoqueCompleto()
 #add_produto()
 #buscarProdutoId(19)
 #buscarProdutoId(2)

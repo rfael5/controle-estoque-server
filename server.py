@@ -9,18 +9,16 @@ CORS(app)
 @app.route("/get-produtos", methods=['GET'])
 def ver_estoque():
     produtos = banco.verEstoque()
-    for x in produtos:
-        print(x)
     return produtos
+
 
 @app.route("/alterar-estoque",  methods=['POST'])
 def alterar_estoque():
     if request.method == 'POST':
         data = request.json
-        print(data)
         banco.adicionarEstoque(data)
         return data
-    #banco.adicionarEstoque()
+    
 
 @app.route("/atualizar-saldo", methods=['PATCH'])
 def atualizar_saldo():
@@ -35,14 +33,19 @@ def get_historico():
     historico = banco.getEstoqueCompleto()
     return historico
 
+
 @app.route("/historico-periodo", methods=["GET"])
 def get_historico_periodo():
     args = request.args
     data_inicio = args.get('data_inicio')
     data_fim = args.get('data_fim')
-    print(f"{data_inicio} _______ {data_fim}")
     historico = banco.buscarHistoricoPeriodo(data_inicio, data_fim)
-    print(historico)
     return historico
 
-get_historico()
+
+def isNullOrEmpty(value):
+    if value == "" or value == None:
+        return True
+    else:
+        return False
+
